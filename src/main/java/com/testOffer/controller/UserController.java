@@ -30,57 +30,64 @@ public class UserController {
 
 	@Autowired
 	UserService userService;
-	
+
 	/**
-	 * {@code POST .
-	 *
-	 * @param
+	 * {@code GET . @return . list of users
 	 * 
-	 * @return .
-	 * @throws .
+	 * @throws NO_CONTENT .
 	 */
 	@LogMethod
 	@RequestMapping(Constants.GET_ALL_USERS)
 	public ResponseEntity<Object> getAllUsers() {
 		try {
+			LOGGER.info("REST request to list user : {}");
+
 			List<User> userList = userService.getAllUsers();
 			if (userList.isEmpty()) {
+				LOGGER.info("EMPTY LIST : NO_CONTENT{}");
+
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 			} else {
+				LOGGER.info("LIST OF USERS{}");
 				return new ResponseEntity<Object>(userList, HttpStatus.OK);
 			}
 		} catch (Exception e) {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			LOGGER.error("BAD_REQUEST: BAD_REQUEST{}",e.getMessage());
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 
 	}
-	
-	
+
+	/**
+	 * {@code GET . @return . user details
+	 * 
+	 * @throws NO_FOUNT .
+	 */
 	@LogMethod
 	@GetMapping(Constants.GET_USER_DETAILS)
 	public ResponseEntity<Object> getDetailUser(@PathVariable String email) {
-		User user = userService.getDetails(email) ; 
-		
-		return new ResponseEntity<Object>(user, HttpStatus.OK);
-//		try {
-//			List<User> userList = userService.getAllUsers();
-//			if (userList.isEmpty()) {
-//				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//			} else {
-//				return new ResponseEntity<Object>(userList, HttpStatus.OK);
-//			}
-//		} catch (Exception e) {
-//			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//		}
+		LOGGER.info("REST request to detail user : {}", email);
+
+		User user;
+		try {
+			user = userService.getDetails(email);
+			LOGGER.info("REST request to detail user : {}", user);
+
+			return new ResponseEntity<Object>(user, HttpStatus.OK);
+		} catch (Exception e) {
+			LOGGER.error("ERROR request to detail user : {}", email);
+
+			return new ResponseEntity<Object>(e.getMessage().toString(), HttpStatus.NOT_FOUND);
+		}
 
 	}
 
 	/**
 	 * {@code POST .
 	 *
-	 * @param
+	 * @param user
 	 * 
-	 * @return .
+	 * @return .created
 	 * @throws .
 	 */
 	@RequestMapping(value = Constants.SAVE_USER, method = RequestMethod.POST)
@@ -90,35 +97,51 @@ public class UserController {
 
 		if (checkCity(user.getCity())) {
 			if ((getAge(LocalDateTime.now(), user.getBirthOfdate()) > 18)) {
-				LOGGER.info("REST request to save user : {}", getAge(LocalDateTime.now(), user.getBirthOfdate()));
 				user.setAge(getAge(LocalDateTime.now(), user.getBirthOfdate()));
-				return new ResponseEntity<Object>(userService.saveUser(user), HttpStatus.OK);
-			} else {
-				LOGGER.error("REST request to save user : {}", "age not valid ");
+				userService.saveUser(user) ; 
+				LOGGER.info("Valid condition save user : {}");
 
-				return new ResponseEntity<Object>("age inférieur 18", HttpStatus.NOT_ACCEPTABLE);
+				return new ResponseEntity<Object>(user, HttpStatus.CREATED);
+			} else {
+				LOGGER.error("ERROR request to save user : {}", "age not valid ");
+
+				return new ResponseEntity<Object>("age Not valid", HttpStatus.NOT_ACCEPTABLE);
 			}
 
 		}
 
 		else {
-			LOGGER.error("REST request to save user : {}", "city not france ");
+			LOGGER.error("ERRO request to save user : {}", "Not Valid City");
 
-			return new ResponseEntity<Object>("city not france ", HttpStatus.NOT_ACCEPTABLE);
+			return new ResponseEntity<Object>("city is  not france ", HttpStatus.NOT_ACCEPTABLE);
 		}
 
 	}
 
+	/**
+	 * {@code Check Pays
+	 *
+	 * @param String
+	 * 
+	 * @return .true if pays is FRANCE .
+	 */
 	private boolean checkCity(String city) {
 		if (city.equals("FRANCE")) {
 			return true;
-		}else {
-			
-			return false ; 
+		} else {
+
+			return false;
 		}
-		
+
 	}
 
+	/**
+	 * {@code difference between two date
+	 *
+	 * @param dateNow and birthDate
+	 * 
+	 * @return .value is the number between two date .
+	 */
 	private long getAge(LocalDateTime dateNaow, LocalDateTime birthDate) {
 		LocalDateTime joiningDate = LocalDateTime.of(birthDate.getYear(), birthDate.getMonth(),
 				birthDate.getDayOfMonth(), birthDate.getHour(), birthDate.getMinute(), birthDate.getSecond());

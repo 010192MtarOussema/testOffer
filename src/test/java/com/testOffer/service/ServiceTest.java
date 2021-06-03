@@ -1,4 +1,4 @@
-package com.testOffer;
+package com.testOffer.service;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -24,18 +24,19 @@ import com.testOffer.controller.UserController;
 import com.testOffer.entity.User;
 import com.testOffer.repository.UserRepository;
 import com.testOffer.service.UserService;
+import com.testOffer.service.Imp.UserServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
-public class StandaloneControllerTests {
+public class ServiceTest {
 
-	@InjectMocks
-	UserService userService;
+	 @InjectMocks
+	  UserServiceImpl userService;
 
-	@Mock
-	UserRepository userRepo;
+	    @Mock
+	    UserRepository userRepo;
 
 	@Test
-	public void testfindAll() throws Exception {
+	public void testregiter() throws Exception {
 		User employee = new User();
      	employee.setAge(18);
 	    employee.setEmail("oussema@mm.com");
@@ -43,6 +44,15 @@ public class StandaloneControllerTests {
 	    userService.saveUser(employee);
 	    verify(userRepo,times(1)).save(employee);
 
-
+	
+	
 	}
+	
+	
+	@Test
+	    public void getDetailsTest()throws Exception{
+	        
+	        User user = userService.getDetails("oussema@mm.com");
+	        verify(userRepo,times(1)).findByEmail("oussema@mm.com");
+	    }
 }
