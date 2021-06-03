@@ -52,7 +52,7 @@ public class UserController {
 				return new ResponseEntity<Object>(userList, HttpStatus.OK);
 			}
 		} catch (Exception e) {
-			LOGGER.error("BAD_REQUEST: BAD_REQUEST{}",e.getMessage());
+			LOGGER.error("BAD_REQUEST: BAD_REQUEST{}", e.getMessage());
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 
@@ -95,25 +95,24 @@ public class UserController {
 
 		LOGGER.info("REST request to save user : {}", user);
 
-		if (checkCity(user.getCity())) {
+		if (checkCity(user.getCountry())) {
 			if ((getAge(LocalDateTime.now(), user.getBirthOfdate()) > 18)) {
 				user.setAge(getAge(LocalDateTime.now(), user.getBirthOfdate()));
-				userService.saveUser(user) ; 
+				userService.saveUser(user);
 				LOGGER.info("Valid condition save user : {}");
 
 				return new ResponseEntity<Object>(user, HttpStatus.CREATED);
 			} else {
-				LOGGER.error("ERROR request to save user : {}", "age not valid ");
+				LOGGER.error("ERROR request to save user : {}", Constants.AGE_NOT_VALID);
 
-				return new ResponseEntity<Object>("age Not valid", HttpStatus.NOT_ACCEPTABLE);
+				return new ResponseEntity<Object>(Constants.AGE_NOT_VALID, HttpStatus.NOT_ACCEPTABLE);
 			}
 
 		}
 
 		else {
-			LOGGER.error("ERRO request to save user : {}", "Not Valid City");
-
-			return new ResponseEntity<Object>("city is  not france ", HttpStatus.NOT_ACCEPTABLE);
+			LOGGER.error("ERRO request to save user : {}", Constants.CITY_NOT_VALID);
+			return new ResponseEntity<Object>(Constants.CITY_NOT_VALID, HttpStatus.NOT_ACCEPTABLE);
 		}
 
 	}

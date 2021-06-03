@@ -19,7 +19,7 @@ public class User{
     @NotEmpty(message = "last name must not be empty")
 	private String lastName;  
 	
-  
+     
     private LocalDateTime  birthOfdate ;
     
     @NotEmpty(message = "email must not be empty")
@@ -27,7 +27,7 @@ public class User{
 	private String email ;
     
     @NotEmpty(message = "city must not be empty")
-	private String city ;
+	private String country ;
     
 	private long age ;
 	
@@ -65,12 +65,15 @@ public class User{
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public String getCity() {
-		return city;
+
+	public String getCountry() {
+		return country;
 	}
-	public void setCity(String city) {
-		this.city = city;
+
+	public void setCountry(String country) {
+		this.country = country;
 	}
+
 	public long getAge() {
 		return age;
 	}
@@ -80,7 +83,7 @@ public class User{
 	@Override
 	public String toString() {
 		return "User [userId=" + userId + ", firstName=" + firstName + ", lastName=" + lastName + ", birthOfdate="
-				+ birthOfdate + ", email=" + email + ", city=" + city + ", age=" + age + "]";
+				+ birthOfdate + ", email=" + email + ", city=" + country + ", age=" + age + "]";
 	} 
 
 	

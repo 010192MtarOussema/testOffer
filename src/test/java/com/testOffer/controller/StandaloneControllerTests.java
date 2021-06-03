@@ -34,7 +34,7 @@ public class StandaloneControllerTests {
         User user = new User();
         user.setFirstName("ahmed");
         user.setLastName("Ibn Mtar");
-        user.setCity("FRANCE");
+        user.setCountry("FRANCE");
         user.setEmail("oussema.mtarr@gmail.com");
         user.setAge(18);
         user.setBirthOfdate(LocalDateTime.of(1993,12,18,0,0));
