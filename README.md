@@ -18,6 +18,12 @@ This project have 3 REST services: one that allows to register a user and the ot
 
 
 <br/>
+###  Build and Run with Docker 
+install Docker 
+
+docker build -t testOffer-api .
+
+docker-compose up 
 
 
 ###  Build and Run application
